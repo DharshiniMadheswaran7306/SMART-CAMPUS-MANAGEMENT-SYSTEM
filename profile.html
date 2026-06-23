@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block title %}My Profile{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+{% block page_subtitle %}Your personal information and details{% endblock %}
+
+{% block content %}
+
+<!-- Profile Hero Banner -->
+<div class="profile-hero fade-in">
+  <div class="profile-avatar-lg">{{ student.name[0] | upper }}</div>
+  <div>
+    <h2>{{ student.name }}</h2>
+    <p>{{ student.department }} &nbsp;•&nbsp; {{ student.classroom }}</p>
+
+    <div class="profile-meta">
+      <div class="profile-meta-item">
+        <i class='bx bx-id-card'></i>
+        <span>{{ student.register_number }}</span>
+      </div>
+      <div class="profile-meta-item">
+        <i class='bx bx-envelope'></i>
+        <span>{{ student.email }}</span>
+      </div>
+      <div class="profile-meta-item">
+        <i class='bx bx-user'></i>
+        <span>ID: {{ student.user_id }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Cards -->
+<div class="profile-details-grid">
+
+  <div class="detail-card fade-in fade-in-1">
+    <div class="detail-icon blue"><i class='bx bxs-user' style="color:#1d4ed8;font-size:22px;"></i></div>
+    <div class="detail-info">
+      <label>Full Name</label>
+      <p>{{ student.name }}</p>
+    </div>
+  </div>
+
+  <div class="detail-card fade-in fade-in-2">
+    <div class="detail-icon green"><i class='bx bx-id-card' style="color:#065f46;font-size:22px;"></i></div>
+    <div class="detail-info">
+      <label>Register Number</label>
+      <p>{{ student.register_number }}</p>
+    </div>
+  </div>
+
+  <div class="detail-card fade-in fade-in-3">
+    <div class="detail-icon purple"><i class='bx bx-book' style="color:#5b21b6;font-size:22px;"></i></div>
+    <div class="detail-info">
+      <label>Department</label>
+      <p>{{ student.department }}</p>
+    </div>
+  </div>
+
+  <div class="detail-card fade-in fade-in-4">
+    <div class="detail-icon yellow"><i class='bx bx-door-open' style="color:#92400e;font-size:22px;"></i></div>
+    <div class="detail-info">
+      <label>Classroom</label>
+      <p>{{ student.classroom }}</p>
+    </div>
+  </div>
+
+  <div class="detail-card fade-in fade-in-5">
+    <div class="detail-icon cyan"><i class='bx bx-envelope' style="color:#164e63;font-size:22px;"></i></div>
+    <div class="detail-info">
+      <label>Email Address</label>
+      <p>{{ student.email }}</p>
+    </div>
+  </div>
+
+  <div class="detail-card fade-in fade-in-5">
+    <div class="detail-icon red"><i class='bx bx-user-pin' style="color:#991b1b;font-size:22px;"></i></div>
+    <div class="detail-info">
+      <label>User ID</label>
+      <p>{{ student.user_id }}</p>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

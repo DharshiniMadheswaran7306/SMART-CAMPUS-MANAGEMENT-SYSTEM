@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}Events{% endblock %}
+{% block page_title %}Campus Events{% endblock %}
+{% block page_subtitle %}Stay updated with hackathons, workshops, conferences and more{% endblock %}
+
+{% block content %}
+
+<!-- Category Filter Buttons -->
+<div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;" class="fade-in">
+  <button class="btn" onclick="filterEvents('all')"
+    style="background:var(--primary);color:white;" id="filter-all">All Events</button>
+  <button class="btn" onclick="filterEvents('Hackathon')"
+    style="background:var(--light);color:var(--dark);" id="filter-Hackathon">🏆 Hackathon</button>
+  <button class="btn" onclick="filterEvents('Electrathon')"
+    style="background:var(--light);color:var(--dark);" id="filter-Electrathon">⚡ Electrathon</button>
+  <button class="btn" onclick="filterEvents('Workshop')"
+    style="background:var(--light);color:var(--dark);" id="filter-Workshop">🛠 Workshop</button>
+  <button class="btn" onclick="filterEvents('Conference')"
+    style="background:var(--light);color:var(--dark);" id="filter-Conference">🎤 Conference</button>
+  <button class="btn" onclick="filterEvents('Paper Publication')"
+    style="background:var(--light);color:var(--dark);" id="filter-Paper Publication">📄 Paper</button>
+</div>
+
+<!-- Events Grid -->
+{% if events %}
+  <div class="events-grid" id="events-container">
+    {% for event in events %}
+      <div class="event-card fade-in" data-category="{{ event.category }}">
+        <div class="event-card-top">
+          <div>
+            <h3 style="font-size:15px;font-weight:700;">{{ event.title }}</h3>
+            <span class="badge
+              {% if event.category == 'Hackathon' %}badge-purple
+              {% elif event.category == 'Electrathon' %}badge-green
+              {% elif event.category == 'Workshop' %}badge-blue
+              {% elif event.category == 'Conference' %}badge-yellow
+              {% else %}badge-red{% endif %}"
+              style="margin-top:6px;">
+              {{ event.category }}
+            </span>
+          </div>
+          <span style="font-size:24px;">
+            {% if event.category == 'Hackathon' %}🏆
+            {% elif event.category == 'Electrathon' %}⚡
+            {% elif event.category == 'Workshop' %}🛠
+            {% elif event.category == 'Conference' %}🎤
+            {% else %}📄{% endif %}
+          </span>
+        </div>
+        <div class="event-card-body">
+          <div class="meta-row"><i class='bx bx-calendar'></i> {{ event.event_date }}</div>
+          <div class="meta-row"><i class='bx bx-time'></i> {{ event.event_time }}</div>
+          <div class="meta-row"><i class='bx bx-map'></i> {{ event.venue }}</div>
+          {% if event.description %}
+            <p class="description">{{ event.description }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card" style="text-align:center;padding:60px;">
+    <p style="font-size:48px;">📅</p>
+    <p style="font-size:18px;font-weight:700;margin-top:16px;">No Events Yet</p>
+    <p style="color:var(--muted);margin-top:8px;">Check back soon — events will appear here when added by admin.</p>
+  </div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function filterEvents(category) {
+    // Reset all filter buttons
+    document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+      btn.style.background = 'var(--light)';
+      btn.style.color      = 'var(--dark)';
+    });
+    const activeBtn = document.getElementById('filter-' + category);
+    if (activeBtn) {
+      activeBtn.style.background = 'var(--primary)';
+      activeBtn.style.color      = 'white';
+    }
+
+    // Show/hide cards
+    document.querySelectorAll('.event-card').forEach(card => {
+      card.style.display = (category === 'all' || card.dataset.category === category) ? '' : 'none';
+    });
+  }
+</script>
+{% endblock %}

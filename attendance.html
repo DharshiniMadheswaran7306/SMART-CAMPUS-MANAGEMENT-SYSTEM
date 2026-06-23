@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}Attendance{% endblock %}
+{% block page_title %}Attendance{% endblock %}
+{% block page_subtitle %}Track your presence and absence records{% endblock %}
+
+{% block content %}
+
+<!-- Attendance Stats -->
+<div class="att-stats-row">
+  <div class="stat-card fade-in fade-in-1">
+    <div class="stat-icon green"><i class='bx bx-check-circle' style="color:#065f46"></i></div>
+    <div class="stat-info">
+      <p>Days Present</p>
+      <h2>{{ presents }}</h2>
+    </div>
+  </div>
+  <div class="stat-card fade-in fade-in-2">
+    <div class="stat-icon red"><i class='bx bx-x-circle' style="color:#991b1b"></i></div>
+    <div class="stat-info">
+      <p>Days Absent</p>
+      <h2>{{ absents }}</h2>
+    </div>
+  </div>
+  <div class="stat-card fade-in fade-in-3">
+    <div class="stat-icon {{ 'green' if att_pct >= 75 else 'yellow' if att_pct >= 60 else 'red' }}">
+      <i class='bx bx-trending-up' style="color:{{ '#065f46' if att_pct >= 75 else '#92400e' if att_pct >= 60 else '#991b1b' }}"></i>
+    </div>
+    <div class="stat-info">
+      <p>Attendance %</p>
+      <h2>{{ att_pct }}%</h2>
+      <div class="att-bar-wrap">
+        <div class="att-bar {{ 'good' if att_pct >= 75 else 'warn' if att_pct >= 60 else 'bad' }}"
+             style="width:{{ att_pct }}%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if att_pct < 75 %}
+<div class="flash error fade-in" style="margin-bottom:20px;">
+  ⚠️ Your attendance is below 75%. Please attend more classes to avoid academic issues.
+</div>
+{% endif %}
+
+<!-- Calendar -->
+<div class="calendar-wrapper fade-in fade-in-4">
+  <div class="calendar-header">
+    <h3 id="cal-month-label">Loading...</h3>
+    <div class="calendar-nav">
+      <button onclick="changeMonth(-1)">‹</button>
+      &nbsp;
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+  </div>
+
+  <!-- Day Name Headers -->
+  <div class="cal-grid">
+    <div class="cal-day-name">Sun</div>
+    <div class="cal-day-name">Mon</div>
+    <div class="cal-day-name">Tue</div>
+    <div class="cal-day-name">Wed</div>
+    <div class="cal-day-name">Thu</div>
+    <div class="cal-day-name">Fri</div>
+    <div class="cal-day-name">Sat</div>
+  </div>
+
+  <div class="cal-grid" id="calendar-days"></div>
+
+  <div class="cal-legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#d1fae5;"></div> Present
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#fee2e2;"></div> Absent
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#fff;border:2px solid var(--primary);"></div> Today
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Attendance data passed from Flask (date → status)
+  const attData = {{ att_dict | safe }};
+
+  let currentDate = new Date();
+
+  function renderCalendar(year, month) {
+    const monthNames = ["January","February","March","April","May","June",
+                        "July","August","September","October","November","December"];
+    document.getElementById("cal-month-label").textContent = monthNames[month] + " " + year;
+
+    const container = document.getElementById("calendar-days");
+    container.innerHTML = "";
+
+    const firstDay   = new Date(year, month, 1).getDay();  // 0=Sun
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today       = new Date();
+
+    // Empty cells before first day
+    for (let i = 0; i < firstDay; i++) {
+      const el = document.createElement("div");
+      el.className = "cal-day empty";
+      container.appendChild(el);
+    }
+
+    // Day cells
+    for (let day = 1; day <= daysInMonth; day++) {
+      const el   = document.createElement("div");
+      const dStr = `${year}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+      let cls    = "cal-day";
+
+      if (attData[dStr] === "present") cls += " present";
+      else if (attData[dStr] === "absent") cls += " absent";
+
+      if (
+        day === today.getDate() &&
+        month === today.getMonth() &&
+        year === today.getFullYear()
+      ) cls += " today";
+
+      el.className = cls;
+      el.textContent = day;
+      el.title = attData[dStr] ? (attData[dStr] === "present" ? "✅ Present" : "❌ Absent") : "";
+      container.appendChild(el);
+    }
+  }
+
+  function changeMonth(dir) {
+    currentDate.setMonth(currentDate.getMonth() + dir);
+    renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+  }
+
+  // Initial render
+  renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+</script>
+{% endblock %}

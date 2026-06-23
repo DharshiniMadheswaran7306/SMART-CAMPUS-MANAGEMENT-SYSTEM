@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Welcome back, {{ student.name }}! Here's your overview.{% endblock %}
+
+{% block content %}
+
+<!-- ── Stats Row ── -->
+<div class="stats-grid">
+  <div class="stat-card fade-in fade-in-1">
+    <div class="stat-icon blue"><i class='bx bx-calendar-check' style="color:#1d4ed8"></i></div>
+    <div class="stat-info">
+      <p>Attendance</p>
+      <h2>{{ att_pct }}%</h2>
+      <span>{{ presents }} days present</span>
+    </div>
+  </div>
+
+  <div class="stat-card fade-in fade-in-2">
+    <div class="stat-icon red"><i class='bx bx-calendar-x' style="color:#991b1b"></i></div>
+    <div class="stat-info">
+      <p>Absent Days</p>
+      <h2>{{ absents }}</h2>
+      <span>This period</span>
+    </div>
+  </div>
+
+  <div class="stat-card fade-in fade-in-3">
+    <div class="stat-icon yellow"><i class='bx bxs-coin-stack' style="color:#92400e"></i></div>
+    <div class="stat-info">
+      <p>Credit Points</p>
+      <h2>{{ points }}</h2>
+      <span>{{ 100 - (points % 100) if points % 100 != 0 else 100 }} pts to free meal</span>
+    </div>
+  </div>
+
+  <div class="stat-card fade-in fade-in-4">
+    <div class="stat-icon purple"><i class='bx bx-restaurant' style="color:#5b21b6"></i></div>
+    <div class="stat-info">
+      <p>Today's Orders</p>
+      <h2>{{ today_orders }}</h2>
+      <span>Canteen orders</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Quick Actions ── -->
+<div class="card fade-in fade-in-3" style="margin-bottom:24px;">
+  <div class="card-header"><h3>⚡ Quick Actions</h3></div>
+  <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap;">
+    <a href="{{ url_for('canteen') }}" class="btn btn-primary"><i class='bx bx-food-menu'></i> Order Food</a>
+    <a href="{{ url_for('attendance') }}" class="btn" style="background:var(--light);color:var(--dark);"><i class='bx bx-calendar'></i> View Attendance</a>
+    <a href="{{ url_for('events') }}" class="btn" style="background:var(--light);color:var(--dark);"><i class='bx bx-calendar-event'></i> Browse Events</a>
+    <a href="{{ url_for('credits') }}" class="btn" style="background:var(--light);color:var(--dark);"><i class='bx bxs-coin-stack'></i> My Credits</a>
+  </div>
+</div>
+
+<!-- ── Two Column Sections ── -->
+<div class="sections-grid">
+
+  <!-- Recent Events -->
+  <div class="card fade-in fade-in-4">
+    <div class="card-header">
+      <h3>📅 Recent Events</h3>
+      <a href="{{ url_for('events') }}" style="font-size:13px;color:var(--primary);font-weight:600;">View All</a>
+    </div>
+    <div class="card-body">
+      {% if events %}
+        {% for event in events %}
+          <div class="event-item">
+            <div class="event-dot {{ event.category | lower | replace(' ', '') }}"></div>
+            <div class="event-info">
+              <h4>{{ event.title }}</h4>
+              <p>{{ event.event_date }} &nbsp;|&nbsp; {{ event.venue }}</p>
+              <span class="badge badge-blue" style="margin-top:4px;">{{ event.category }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="color:var(--muted);font-size:14px;text-align:center;padding:20px 0;">No events yet. Check back soon!</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Profile Summary -->
+  <div class="card fade-in fade-in-5">
+    <div class="card-header">
+      <h3>👤 My Profile</h3>
+      <a href="{{ url_for('profile') }}" style="font-size:13px;color:var(--primary);font-weight:600;">Full Profile</a>
+    </div>
+    <div class="card-body">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+        <div class="avatar" style="width:56px;height:56px;font-size:22px;">{{ student.name[0] | upper }}</div>
+        <div>
+          <p style="font-size:17px;font-weight:700;">{{ student.name }}</p>
+          <p style="color:var(--muted);font-size:13px;">{{ student.department }}</p>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:13px;color:var(--muted);">Register No.</span>
+          <span style="font-size:13px;font-weight:600;">{{ student.register_number }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:13px;color:var(--muted);">Classroom</span>
+          <span style="font-size:13px;font-weight:600;">{{ student.classroom }}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;">
+          <span style="font-size:13px;color:var(--muted);">Email</span>
+          <span style="font-size:13px;font-weight:600;">{{ student.email }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+
+{% block title %}Credit Points{% endblock %}
+{% block page_title %}Credit Points{% endblock %}
+{% block page_subtitle %}Track your earned points and order history{% endblock %}
+
+{% block content %}
+
+<!-- Points Hero -->
+<div class="points-hero fade-in">
+  <p style="font-size:15px;opacity:0.7;margin-bottom:8px;">Total Earned Points</p>
+  <h1>{{ points }}</h1>
+  <p>🎉 {{ free_meals }} Free Meal{{ 's' if free_meals != 1 }} Earned So Far!</p>
+
+  <div class="points-progress-wrap">
+    <div class="points-progress-label">
+      <span>Progress to next free meal</span>
+      <span>{{ points % 100 }}/100 pts</span>
+    </div>
+    <div class="points-progress-bar">
+      <div class="points-progress-fill" style="width:{{ points % 100 }}%"></div>
+    </div>
+  </div>
+
+  {% if next_milestone <= 10 %}
+    <p style="margin-top:12px;font-size:14px;background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:20px;display:inline-block;">
+      🔥 Only {{ next_milestone }} more points to your next free meal!
+    </p>
+  {% endif %}
+</div>
+
+<!-- Info Cards -->
+<div class="stats-grid fade-in fade-in-2" style="margin-bottom:24px;">
+  <div class="stat-card">
+    <div class="stat-icon yellow"><i class='bx bxs-coin-stack' style="color:#92400e"></i></div>
+    <div class="stat-info">
+      <p>Total Points</p>
+      <h2>{{ points }}</h2>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green"><i class='bx bx-dish' style="color:#065f46"></i></div>
+    <div class="stat-info">
+      <p>Free Meals Earned</p>
+      <h2>{{ free_meals }}</h2>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple"><i class='bx bx-target-lock' style="color:#5b21b6"></i></div>
+    <div class="stat-info">
+      <p>Points to Next Meal</p>
+      <h2>{{ next_milestone }}</h2>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class='bx bx-receipt' style="color:#1d4ed8"></i></div>
+    <div class="stat-info">
+      <p>Total Orders</p>
+      <h2>{{ orders | length }}</h2>
+    </div>
+  </div>
+</div>
+
+<!-- How It Works -->
+<div class="card fade-in fade-in-3" style="margin-bottom:24px;">
+  <div class="card-header"><h3>ℹ️ How Credit Points Work</h3></div>
+  <div class="card-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+    <div style="text-align:center;padding:16px;">
+      <div style="font-size:36px;margin-bottom:8px;">🛒</div>
+      <p style="font-weight:700;font-size:14px;">Place an Order</p>
+      <p style="color:var(--muted);font-size:13px;">Every canteen order earns you credit points</p>
+    </div>
+    <div style="text-align:center;padding:16px;">
+      <div style="font-size:36px;margin-bottom:8px;">⭐</div>
+      <p style="font-weight:700;font-size:14px;">+5 Points Each</p>
+      <p style="color:var(--muted);font-size:13px;">You get 5 credit points per order placed</p>
+    </div>
+    <div style="text-align:center;padding:16px;">
+      <div style="font-size:36px;margin-bottom:8px;">🎁</div>
+      <p style="font-weight:700;font-size:14px;">100 Points = Free Meal</p>
+      <p style="color:var(--muted);font-size:13px;">Reach 100 points and earn a free meal!</p>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Order History -->
+<div class="card fade-in fade-in-4">
+  <div class="card-header"><h3>📋 Order History (Last 20)</h3></div>
+  <div class="card-body" style="padding:0;">
+    {% if orders %}
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Points Earned</th>
+            <th>Date</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td style="color:var(--muted);">{{ loop.index }}</td>
+              <td style="font-weight:600;">{{ order.name }}</td>
+              <td>₹{{ "%.0f"|format(order.price) }}</td>
+              <td><span class="badge badge-yellow">+5 pts</span></td>
+              <td>{{ order.order_date }}</td>
+              <td style="color:var(--muted);">{{ order.order_time[:5] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div style="text-align:center;padding:40px;">
+        <p style="font-size:40px;">🛒</p>
+        <p style="font-size:16px;font-weight:700;margin-top:12px;">No Orders Yet</p>
+        <p style="color:var(--muted);margin-top:6px;">Start ordering from the canteen to earn points!</p>
+        <a href="{{ url_for('canteen') }}" class="btn btn-primary" style="margin-top:16px;display:inline-block;">
+          Order Now
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

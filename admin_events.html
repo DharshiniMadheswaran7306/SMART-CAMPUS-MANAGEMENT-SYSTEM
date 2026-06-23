@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Events{% endblock %}
+{% block page_title %}Manage Events{% endblock %}
+{% block page_subtitle %}Add new events — students will be notified via email{% endblock %}
+
+{% block content %}
+
+<!-- Add Event Form -->
+<div class="admin-form-card fade-in">
+  <h2>➕ Add New Event</h2>
+  <form method="POST">
+
+    <div class="form-row">
+      <div class="field">
+        <label>Event Title *</label>
+        <input type="text" name="title" placeholder="e.g. Smart Campus Hackathon 2026" required />
+      </div>
+      <div class="field">
+        <label>Category *</label>
+        <select name="category" required>
+          <option value="">-- Select Category --</option>
+          <option value="Hackathon">🏆 Hackathon</option>
+          <option value="Electrathon">⚡ Electrathon</option>
+          <option value="Workshop">🛠 Workshop</option>
+          <option value="Conference">🎤 Conference</option>
+          <option value="Paper Publication">📄 Paper Publication</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>Event Date *</label>
+        <input type="date" name="event_date" required />
+      </div>
+      <div class="field">
+        <label>Event Time *</label>
+        <input type="time" name="event_time" required />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Venue *</label>
+      <input type="text" name="venue" placeholder="e.g. Main Auditorium, Block A" required />
+    </div>
+
+    <div class="field">
+      <label>Description</label>
+      <textarea name="description" placeholder="Describe the event, who can participate, prizes, etc."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      📧 Add Event & Notify Students
+    </button>
+  </form>
+</div>
+
+<!-- Existing Events Table -->
+<div class="card fade-in fade-in-2">
+  <div class="card-header"><h3>📋 All Events ({{ events | length }})</h3></div>
+  <div class="card-body" style="padding:0;overflow-x:auto;">
+    {% if events %}
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Venue</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in events %}
+            <tr>
+              <td style="font-weight:600;">{{ event.title }}</td>
+              <td>
+                <span class="badge
+                  {% if event.category == 'Hackathon' %}badge-purple
+                  {% elif event.category == 'Workshop' %}badge-blue
+                  {% elif event.category == 'Conference' %}badge-yellow
+                  {% elif event.category == 'Electrathon' %}badge-green
+                  {% else %}badge-red{% endif %}">
+                  {{ event.category }}
+                </span>
+              </td>
+              <td>{{ event.event_date }}</td>
+              <td>{{ event.event_time }}</td>
+              <td>{{ event.venue }}</td>
+              <td>
+                <a href="{{ url_for('delete_event', eid=event.id) }}"
+                   onclick="return confirm('Delete this event?')"
+                   class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div style="text-align:center;padding:40px;color:var(--muted);">
+        No events added yet. Use the form above to add one.
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

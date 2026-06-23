@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Student Emails{% endblock %}
+{% block page_title %}👥 Student Email Addresses{% endblock %}
+{% block page_subtitle %}Update real email addresses so notifications are delivered{% endblock %}
+
+{% block content %}
+
+<!-- Why this matters -->
+<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius);
+            padding:18px 24px;margin-bottom:24px;display:flex;gap:14px;align-items:flex-start;" class="fade-in">
+  <span style="font-size:24px;flex-shrink:0;">⚠️</span>
+  <div>
+    <p style="font-weight:700;font-size:14px;color:#92400e;">Fake emails in database = no notifications received</p>
+    <p style="font-size:13px;color:#b45309;margin-top:4px;">
+      The default student accounts use placeholder emails like <code>dharshini@college.edu</code>.
+      Replace them with real email addresses below so event and restock notifications actually arrive.
+      Your sender email (<strong>{{ sender }}</strong>) will be used as the "From" address.
+    </p>
+  </div>
+</div>
+
+<div class="card fade-in fade-in-2">
+  <div class="card-header">
+    <h3>✏️ Edit Student Emails</h3>
+    <span style="font-size:13px;color:var(--muted);">Changes save to database immediately</span>
+  </div>
+  <div class="card-body">
+    <form method="POST">
+      <div style="display:flex;flex-direction:column;gap:0;">
+        {% for stu in students %}
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center;
+                    padding:14px 0;border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-size:14px;font-weight:700;">{{ stu.name }}</div>
+            <div style="font-size:12px;color:var(--muted);">{{ stu.user_id }} · {{ stu.department }}</div>
+          </div>
+          <div class="field" style="margin:0;">
+            <input type="email" name="email_{{ stu.id }}"
+              value="{{ stu.email }}"
+              placeholder="student@gmail.com"
+              style="width:100%;" required />
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:12px;align-items:center;">
+        <button type="submit" class="btn btn-primary">💾 Save All Emails</button>
+        <a href="{{ url_for('test_email') }}" class="btn"
+           style="background:var(--light);color:var(--dark);">
+          🧪 Test Email →
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Quick tip -->
+<div style="margin-top:20px;padding:16px 20px;background:var(--light);
+            border-radius:var(--radius-sm);font-size:13px;color:var(--muted);" class="fade-in fade-in-3">
+  <strong>💡 Tip:</strong> For testing, you can set all students to your own email
+  (<strong>{{ sender }}</strong>) so you receive all notifications in one inbox.
+  Later, replace with each student's real email.
+</div>
+
+{% endblock %}

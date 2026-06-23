@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Smart Campus Management System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-card">
+
+    <!-- Logo -->
+    <div class="login-logo">
+      <div class="logo-icon">🎓</div>
+      <h1>Smart Campus</h1>
+      <p>Management System</p>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}" style="margin-bottom:16px;">
+            <i class='bx bx-error-circle'></i> {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Login Form -->
+    <form method="POST" action="{{ url_for('login') }}">
+      <div class="form-group">
+        <label>User ID</label>
+        <div class="input-wrap">
+          <i class='bx bx-user icon'></i>
+          <input type="text" name="user_id" placeholder="e.g. STU001" required autocomplete="username" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <i class='bx bx-lock-alt icon'></i>
+          <input type="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-login">
+        Sign In &nbsp;<i class='bx bx-right-arrow-alt'></i>
+      </button>
+    </form>
+
+    <!-- Demo Credentials Hint -->
+    <div class="demo-hint">
+      <p>Demo: <strong>STU001</strong> / <strong>pass123</strong></p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer style="position:fixed;bottom:0;width:100%;text-align:center;padding:12px;color:rgba(255,255,255,0.3);font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;">
+  &copy; 2026 Smart Campus Management System
+</footer>
+
+</body>
+</html>

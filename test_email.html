@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% block title %}Email Setup{% endblock %}
+{% block page_title %}📧 Email Configuration{% endblock %}
+{% block page_subtitle %}Test and fix your email notification settings{% endblock %}
+
+{% block content %}
+
+<!-- Status Card -->
+<div class="card fade-in" style="margin-bottom:24px;">
+  <div class="card-header"><h3>⚙️ Current Email Status</h3></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+      <div style="padding:16px;border-radius:var(--radius-sm);
+        background:{{ '#d1fae5' if password_set else '#fee2e2' }};
+        border:1px solid {{ '#6ee7b7' if password_set else '#fca5a5' }};">
+        <div style="font-size:20px;margin-bottom:6px;">{{ '✅' if password_set else '❌' }}</div>
+        <div style="font-weight:700;font-size:14px;color:{{ '#065f46' if password_set else '#991b1b' }};">
+          {{ 'Credentials Configured' if password_set else 'Credentials NOT Set' }}
+        </div>
+        <div style="font-size:12px;color:{{ '#047857' if password_set else '#b91c1c' }};margin-top:4px;">
+          {% if password_set %}
+            Sender: <strong>{{ sender }}</strong>
+          {% else %}
+            Still using placeholder values in app.py
+          {% endif %}
+        </div>
+      </div>
+
+      <div style="padding:16px;border-radius:var(--radius-sm);background:#f0f9ff;border:1px solid #bae6fd;">
+        <div style="font-size:20px;margin-bottom:6px;">ℹ️</div>
+        <div style="font-weight:700;font-size:14px;color:#0369a1;">SMTP Server</div>
+        <div style="font-size:12px;color:#0284c7;margin-top:4px;">
+          smtp.gmail.com : 587 (TLS)
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Step-by-step setup -->
+{% if not password_set %}
+<div class="card fade-in fade-in-2" style="margin-bottom:24px;">
+  <div class="card-header"><h3>🔧 How to Fix — Step by Step</h3></div>
+  <div class="card-body">
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:white;
+                    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">1</div>
+        <div>
+          <p style="font-weight:700;font-size:14px;">Enable 2-Step Verification on your Google Account</p>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">
+            Go to <a href="https://myaccount.google.com/security" target="_blank"
+              style="color:var(--primary);">myaccount.google.com/security</a>
+            → find <strong>2-Step Verification</strong> → turn it ON.
+            (This is required before App Passwords will appear.)
+          </p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:white;
+                    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">2</div>
+        <div>
+          <p style="font-weight:700;font-size:14px;">Create a Gmail App Password</p>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">
+            Go to <a href="https://myaccount.google.com/apppasswords" target="_blank"
+              style="color:var(--primary);">myaccount.google.com/apppasswords</a><br>
+            → App name: type <code style="background:var(--light);padding:1px 6px;border-radius:4px;">Smart Campus</code>
+            → click <strong>Create</strong><br>
+            → Google shows a <strong>16-character password</strong> like <code style="background:var(--light);padding:1px 6px;border-radius:4px;">abcd efgh ijkl mnop</code><br>
+            → Copy it (you won't see it again)
+          </p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:white;
+                    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">3</div>
+        <div>
+          <p style="font-weight:700;font-size:14px;">Update <code style="background:var(--light);padding:1px 6px;border-radius:4px;">app.py</code></p>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">Open <strong>app.py</strong> and find these two lines near the top:</p>
+          <div style="background:#0f172a;border-radius:8px;padding:16px;margin-top:8px;font-family:monospace;font-size:13px;color:#e2e8f0;">
+            <span style="color:#94a3b8;">EMAIL_SENDER   = </span><span style="color:#86efac;">"your_email@gmail.com"</span><br>
+            <span style="color:#94a3b8;">EMAIL_PASSWORD = </span><span style="color:#86efac;">"your_app_password"</span>
+          </div>
+          <p style="font-size:13px;color:var(--muted);margin-top:8px;">Replace with your real values:</p>
+          <div style="background:#0f172a;border-radius:8px;padding:16px;margin-top:4px;font-family:monospace;font-size:13px;color:#e2e8f0;">
+            <span style="color:#94a3b8;">EMAIL_SENDER   = </span><span style="color:#86efac;">"yourname@gmail.com"</span><br>
+            <span style="color:#94a3b8;">EMAIL_PASSWORD = </span><span style="color:#86efac;">"abcdefghijklmnop"</span>
+            <span style="color:#64748b;">  # 16-char app password, no spaces</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;align-items:flex-start;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:white;
+                    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;">4</div>
+        <div>
+          <p style="font-weight:700;font-size:14px;">Restart Flask &amp; test below</p>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">
+            Stop the server (Ctrl+C) and run <code style="background:var(--light);padding:1px 6px;border-radius:4px;">python app.py</code> again.
+            Then use the test form below to verify emails are working.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Test email form -->
+<div class="card fade-in fade-in-3">
+  <div class="card-header"><h3>🧪 Send a Test Email</h3></div>
+  <div class="card-body">
+
+    {% if result %}
+      <div style="padding:16px;border-radius:var(--radius-sm);margin-bottom:20px;
+        background:{{ '#d1fae5' if result.ok else '#fee2e2' }};
+        border-left:4px solid {{ '#10b981' if result.ok else '#ef4444' }};">
+        <div style="font-weight:700;font-size:14px;color:{{ '#065f46' if result.ok else '#991b1b' }};">
+          {{ '✅ Success' if result.ok else '❌ Failed' }}
+        </div>
+        <div style="font-size:13px;margin-top:6px;color:{{ '#047857' if result.ok else '#b91c1c' }};
+                    white-space:pre-line;">{{ result.msg }}</div>
+      </div>
+    {% endif %}
+
+    <form method="POST">
+      <div class="field">
+        <label>Send test email to</label>
+        <input type="email" name="to_addr"
+          placeholder="e.g. dharshini@gmail.com"
+          value="{{ request.form.get('to_addr', '') }}"
+          required style="max-width:400px;" />
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+          Enter any email you have access to — not necessarily a student email.
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        📧 Send Test Email
+      </button>
+    </form>
+
+    <div style="margin-top:20px;padding:14px;background:var(--light);
+                border-radius:var(--radius-sm);font-size:13px;color:var(--muted);">
+      <strong>💡 Note:</strong> Student emails in the database are fake (e.g. dharshini@college.edu).
+      Update them with real email addresses in the database, or change them in <code>app.py</code>
+      under <em>Seed students</em> section before going live.
+    </div>
+  </div>
+</div>
+
+{% endblock %}
